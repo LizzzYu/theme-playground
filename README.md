@@ -1,31 +1,92 @@
-# React + TypeScript + Vite
+# Electron Background and Theme Customizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is an Electron application built with React and TypeScript. It allows users to customize the UI by selecting themes, background colors, CSS animations, and video or image backgrounds. The user's preferences are persistent and saved between sessions using Electron's IPC and context management.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Background Customization:**
+  - Upload custom images or videos to set as background.
+  - Choose from predefined CSS animations, videos, or images.
+  - Support for video backgrounds using local or blob URLs for optimized memory usage.
+  
+- **Theme Customization:**
+  - Customize primary, secondary, accent, and text colors.
+  - Predefined themes available for quick selection.
+  
+- **Persistence:**
+  - User's customizations (theme, background) are saved and persisted between app restarts.
 
-## Expanding the ESLint configuration
+- **Electron IPC:**
+  - Background and theme settings are managed using Electron's IPC communication, allowing data to be shared between the main and renderer processes.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Project Structure
 
-- Configure the top-level `parserOptions` property like this:
+- `src/`: Main source folder containing the Electron app.
+  - `components/`: Contains all React components such as `Menu`, `BackgroundSelector`, `ThemePicker`.
+  - `hooks/`: Contains custom React hooks including `useAppContext` for managing global state.
+  - `data/`: Contains predefined background themes and options.
+  - `assets/`: Media assets (images, videos) that are used in the project.
+  
+- `main.ts`: Main process code that manages the Electron lifecycle and window creation.
+- `preload.ts`: Preloads the IPC bridge for secure communication between Electron's renderer and main process.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+## Installation and Setup
+
+### Prerequisites
+
+Ensure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (v14+)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+
+### Installation
+
+1. Clone the repository:
+    ```bash
+    git clone <repository-url>
+    cd <project-directory>
+    ```
+
+2. Install dependencies:
+    ```bash
+    npm install
+    ```
+
+3. Start the development environment:
+    ```bash
+    npm run dev
+    ```
+
+   This command starts both the Electron and React development servers.
+
+### Build for Production
+
+To build the application for production:
+
+```bash
+npm run build
+npm run electron:build
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
-# theme-playground
+## Available Commands
+
+- `npm run dev`: Start the application in development mode with hot-reload.
+- `npm run build`: Build the React application for production.
+- `npm run electron:build`: Build the Electron application for production.
+- `npm run lint`: Lint the project using ESLint.
+
+## Usage
+
+Upon launching the application, you can:
+
+### Select a Background:
+
+- Choose from predefined backgrounds (CSS animations, videos, or images).
+- Upload custom images or videos as the background.
+
+### Customize Theme:
+
+- Change primary, secondary, accent, and text colors.
+- Choose from predefined color themes.
+
+All changes are saved automatically, and the app will remember your settings the next time you open it.
