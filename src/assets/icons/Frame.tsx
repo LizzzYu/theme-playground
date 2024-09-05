@@ -1,9 +1,9 @@
 import { Icon } from './icons.types';
 
-const FrameIcon = ({ fill }: Icon) => (
+const FrameIcon = ({ fill, width, height }: Icon) => (
 	<svg
-		width="50"
-		height="50"
+		width={width}
+		height={height}
 		viewBox="0 0 50 50"
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg">

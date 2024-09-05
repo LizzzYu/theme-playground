@@ -1,6 +1,7 @@
 import React, { RefObject } from 'react';
 import { useAppContext } from '../../hooks/useAppContext';
 import FrameIcon from '../../assets/icons/Frame';
+import AddIcon from '../../assets/icons/Add';
 
 interface BackgroundSelectorCurrentProps {
 	handleFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -20,7 +21,7 @@ const BackgroundSelectorCurrent: React.FC<BackgroundSelectorCurrentProps> = ({
 			return (
 				<div className="flex flex-col w-[480px] h-[270px] items-center justify-center">
 					<span className="text-4xl">
-						<FrameIcon fill={theme?.accent} />
+						<FrameIcon width={24} height={24} fill={theme?.accent} />
 					</span>
 					<p className="mt-2 text-sm text-gray-400">No background selected</p>
 				</div>
@@ -85,9 +86,10 @@ const BackgroundSelectorCurrent: React.FC<BackgroundSelectorCurrentProps> = ({
 			{/* custom upload button */}
 			<button
 				onClick={handleUploadClick}
-				className="typography-subtitle text-white py-3 px-4 w-fit h-fit rounded my-6 transition hover:opacity-75"
+				className="typography-subtitle flex justify-center items-center text-white py-3 px-4 w-fit h-fit rounded my-6 transition hover:opacity-75"
 				style={{ backgroundColor: theme?.accent }}>
-				Pick Your File
+				<p className="pr-2">Pick Your File</p>
+				<AddIcon />
 			</button>
 		</div>
 	);
