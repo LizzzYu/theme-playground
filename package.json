@@ -1,7 +1,9 @@
 {
   "name": "themes-liz",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Theme Playground to change themes and backgrounds",
+  "author": "Liz Yu",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,6 +11,27 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start": "electron ."
+  },
+  "build": {
+    "appId": "theme.playground",
+    "productName": "Theme-Playground",
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        }
+      ],
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "src/assets/**/*",
+      "package.json"
+    ]
   },
   "dependencies": {
     "react": "^18.2.0",
