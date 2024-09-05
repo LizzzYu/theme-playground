@@ -1,35 +1,69 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/electron-vite.animate.svg'
-import './App.css'
+import React, { useEffect, useState } from 'react';
+import Menu from './components/Menu/Menu';
+import { useAppContext } from './hooks/useAppContext';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+	const { isCSS, isVideo, background } = useAppContext();
+	const [videoLoaded, setVideoLoaded] = useState(false);
 
-  return (
-    <>
-      <div>
-        <a href="https://electron-vite.github.io" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+	useEffect(() => {
+		setVideoLoaded(false);
+	}, [background, isVideo, isCSS]);
 
-export default App
+	const handleVideoLoad = () => {
+		setVideoLoaded(true);
+	};
+
+	const getBackgroundStyles = () => {
+		if (isCSS) {
+			return {};
+		}
+
+		if (isVideo) {
+			return {
+				backgroundColor: undefined,
+				backgroundSize: 'cover',
+				backgroundRepeat: 'no-repeat',
+				zIndex: -1,
+			};
+		}
+
+		return {
+			backgroundImage: background ? `url(${background})` : 'none',
+			backgroundSize: 'cover',
+			backgroundRepeat: 'no-repeat',
+			zIndex: -1,
+			transition: 'all opacity ease-in-out',
+		};
+	};
+
+	return (
+		<div className="min-h-screen flex items-center justify-center relative">
+			<div
+				className={`absolute top-0 left-0 w-full h-full ${
+					isCSS ? background : ''
+				}`}
+				style={getBackgroundStyles()}>
+				{isVideo && background && !isCSS && (
+					<video
+						key={background}
+						autoPlay
+						loop
+						muted
+						onLoadedData={handleVideoLoad}
+						className={`absolute top-0 left-0 w-full h-full object-cover z-[-1] transition-opacity duration-1000 ${
+							videoLoaded ? 'opacity-100' : 'opacity-0'
+						}`}>
+						<source src={background} type="video/webm" />
+						<source src={background} type="video/mp4" />
+						Your browser does not support the video tag.
+					</video>
+				)}
+			</div>
+
+			<Menu />
+		</div>
+	);
+};
+
+export default App;

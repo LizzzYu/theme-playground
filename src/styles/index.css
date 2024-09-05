@@ -1,0 +1,39 @@
+@import './animation.css';
+@import './fonts.css';
+@import './typography.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: black;
+
+}
+
+#root {
+  width: 100%;
+  overflow: hidden;
+}
+
+:root {
+  font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
+}
+
+/* hide scroll bar */
+/* Chrome, Safari, Edge */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* IE & Edge */
+* {
+  -ms-overflow-style: none;
+}
+
+

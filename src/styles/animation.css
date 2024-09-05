@@ -1,0 +1,40 @@
+.background-animate-1 {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
+}
+
+.background-animate-2 {
+  background: linear-gradient(45deg, #ff6f69, #ffcc5c, #88d8b0);
+  background-size: 300% 300%;
+  animation: gradientAnimation 10s ease infinite;
+}
+
+.background-animate-3 {
+  background: radial-gradient(circle, #ff758c, #ff7eb3, #ff7eb3);
+  animation: radialAnimation 20s linear infinite;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes radialAnimation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
