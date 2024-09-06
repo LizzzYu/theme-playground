@@ -1,6 +1,5 @@
 import React, { createContext, useState, ReactNode, useEffect } from 'react';
 import { Theme } from '../components/ThemePicker/ThemePicker.types';
-import { createBlobUrl } from '../utils/createBlobUrl';
 import { predefinedThemes } from '../data/themes';
 import { predefinedBackgrounds } from '../data/backgrounds';
 
@@ -63,16 +62,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
 				setIsCSS(mergedSettings.isCSS);
 				setThemeState(mergedSettings.theme);
 
-				if (mergedSettings.background) {
-					if (mergedSettings.isVideo) {
-						const blobUrl = await createBlobUrl(mergedSettings.background);
-						setBackgroundState(blobUrl);
-					} else {
-						setBackgroundState(mergedSettings.background);
-					}
-				} else {
-					setBackgroundState(null);
-				}
+				setBackgroundState(mergedSettings.background || null);
 			} catch (error) {
 				console.error('Failed to fetch settings:', error);
 			}
@@ -88,40 +78,23 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
 		video: boolean,
 		css: boolean
 	) => {
-		// If there is a previous video blob, revoke the object URL to avoid memory leaks
-		if (isVideo && background && background.startsWith('blob:')) {
-			URL.revokeObjectURL(background);
-		}
-
-		const updateBackground = async () => {
+		const updateBackground = () => {
 			try {
-				if (video && newBackground) {
-					// If the new background is a video, create a blob URL
-					const blobUrl = await createBlobUrl(newBackground);
-					setBackgroundState(blobUrl);
+				setBackgroundState(newBackground);
 
-					// Update settings in the main process
-					window.ipcRenderer.send('update-settings', {
-						background: newBackground,
-						isVideo: video,
-						isCSS: css,
-					});
-				} else {
-					// For non-video background, set directly
-					setBackgroundState(newBackground);
-					window.ipcRenderer.send('update-settings', {
-						background: newBackground,
-						isVideo: video,
-						isCSS: css,
-					});
-				}
+				// Update settings in the main process
+				window.ipcRenderer.send('update-settings', {
+					background: newBackground,
+					isVideo: video,
+					isCSS: css,
+				});
 			} catch (error) {
 				console.error('Failed to set background:', error);
 			}
 		};
 
 		// Update the background state and settings
-		void updateBackground();
+		updateBackground();
 
 		// Update the isVideo and isCSS states
 		setIsVideo(video);

@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React, { RefObject, useEffect } from 'react';
 import { useAppContext } from '../../hooks/useAppContext';
 import FrameIcon from '../../assets/icons/Frame';
 import AddIcon from '../../assets/icons/Add';
@@ -14,10 +14,52 @@ const BackgroundSelectorCurrent: React.FC<BackgroundSelectorCurrentProps> = ({
 	handleUploadClick,
 	fileInputRef,
 }) => {
-	const { background, theme } = useAppContext();
+	const { background, theme, setBackground } = useAppContext();
+
+	useEffect(() => {
+		const fetchStoredBackground = async () => {
+			try {
+				// Fetch settings from the main process
+				const storedBackground = (await window.ipcRenderer.invoke(
+					'userBackground'
+				)) as string;
+				if (storedBackground) {
+					setBackground(storedBackground, false, false);
+				}
+			} catch (error) {
+				console.error('Failed to fetch settings:', error);
+			}
+		};
+
+		void fetchStoredBackground;
+	}, [setBackground]);
+
+	const handleFileChangeWithSave = (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
+		const file = event.target.files?.[0];
+		if (file) {
+			const filePath = file.path;
+			const isVideoFile = file.type.startsWith('video');
+
+			window.ipcRenderer
+				.invoke('save-background', filePath)
+				.then((savedBackground: string) => {
+					const savedBackgroundUrl = `file://${savedBackground.replace(
+						/\\/g,
+						'/'
+					)}`;
+					setBackground(savedBackgroundUrl, isVideoFile, false);
+				})
+				.catch((error) => {
+					console.error('Failed to save background:', error);
+				});
+		}
+		handleFileChange(event);
+	};
 
 	const renderSelectedBackground = () => {
-		if (!background) {
+		if (!background || typeof background !== 'string') {
 			return (
 				<div className="flex flex-col w-[480px] h-[270px] items-center justify-center">
 					<span className="text-4xl">
@@ -32,7 +74,7 @@ const BackgroundSelectorCurrent: React.FC<BackgroundSelectorCurrentProps> = ({
 			return <div className={`w-full h-full ${background}`} />;
 		}
 
-		if (background.startsWith('blob')) {
+		if (background.endsWith('.mp4') || background.endsWith('.webm')) {
 			return (
 				<video
 					src={background}
@@ -79,7 +121,7 @@ const BackgroundSelectorCurrent: React.FC<BackgroundSelectorCurrentProps> = ({
 				ref={fileInputRef}
 				type="file"
 				accept="image/*,video/*"
-				onChange={handleFileChange}
+				onChange={handleFileChangeWithSave}
 				className="hidden"
 			/>
 

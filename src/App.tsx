@@ -29,7 +29,6 @@ const App: React.FC = () => {
 		}
 
 		return {
-			backgroundImage: background ? `url(${background})` : 'none',
 			backgroundSize: 'cover',
 			backgroundRepeat: 'no-repeat',
 			zIndex: -1,
@@ -58,6 +57,13 @@ const App: React.FC = () => {
 						<source src={background} type="video/mp4" />
 						Your browser does not support the video tag.
 					</video>
+				)}
+				{!isVideo && background && !isCSS && (
+					<img
+						src={background}
+						alt="Selected Background"
+						className="w-full h-full object-cover"
+					/>
 				)}
 			</div>
 

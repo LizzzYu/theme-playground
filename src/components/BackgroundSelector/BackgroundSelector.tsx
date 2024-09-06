@@ -11,17 +11,13 @@ const BackgroundSelector: React.FC = () => {
 		const file = event.target.files?.[0];
 		if (file) {
 			const isFileVideo = file.type.startsWith('video/');
-			const reader = new FileReader();
+
+			const filePath = file.path;
 
 			if (isFileVideo) {
-				const videoUrl = URL.createObjectURL(file);
-				setBackground(videoUrl, true, false);
+				setBackground(filePath, true, false);
 			} else {
-				reader.onload = (e) => {
-					const base64 = e.target?.result as string;
-					setBackground(base64, false, false);
-				};
-				reader.readAsDataURL(file);
+				setBackground(filePath, false, false);
 			}
 		}
 	};

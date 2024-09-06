@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import Store from 'electron-store';
+import fs from 'fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -30,6 +31,7 @@ function createWindow() {
 		autoHideMenuBar: true,
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.mjs'),
+			webSecurity: false,
 		},
 	});
 
@@ -60,7 +62,7 @@ app.on('activate', () => {
 app.whenReady().then(createWindow);
 
 ipcMain.handle('get-settings', () => {
-	return store.get('userSettings');
+	return store.get('userSettings', {});
 });
 
 ipcMain.on('update-settings', (event, newSettings) => {
@@ -70,4 +72,31 @@ ipcMain.on('update-settings', (event, newSettings) => {
 	>;
 	store.set('userSettings', { ...currentSettings, ...newSettings });
 	event.sender.send('settings-updated', newSettings);
+});
+
+ipcMain.handle('save-background', (filePath) => {
+	if (typeof filePath !== 'string') {
+		throw new TypeError('The "path" argument must be of type string.');
+	}
+
+	const saveDirectory = path.join(app.getPath('userData'), 'backgrounds');
+	const fileName = path.basename(filePath);
+	const destination = path.join(saveDirectory, fileName);
+
+	if (!fs.existsSync(saveDirectory)) {
+		fs.mkdirSync(saveDirectory);
+	}
+
+	if (!fs.existsSync(destination)) {
+		try {
+			fs.copyFileSync(filePath, destination);
+		} catch (error) {
+			console.error('Failed to copy file:', error);
+			throw new Error('Failed to save file');
+		}
+	}
+
+	store.set('userBackground', destination);
+
+	return destination;
 });

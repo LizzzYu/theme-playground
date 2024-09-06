@@ -13,8 +13,10 @@
     "start": "electron ."
   },
   "build": {
+    "asar": true,
     "appId": "theme.playground",
-    "productName": "Theme-Playground",
+    "productName": "Theme Playground",
+    "compression": "maximum",
       "icon": "build/icon.ico",
       "target": [
         {
@@ -30,7 +32,11 @@
       "dist/**/*",
       "dist-electron/**/*",
       "src/assets/**/*",
-      "package.json"
+      "package.json",
+      "!**/node_modules/**/*",
+      "!**/tests/**/*",
+      "!**/*.md",
+      "!**/node_modules/**/*.log"
     ]
   },
   "dependencies": {
